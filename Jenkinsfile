@@ -12,7 +12,7 @@ pipeline {
             steps {
                 sh '''
                 ls -la
-                echo 'docker
+                echo docker
                 npm --version
                 npm ci
                 npm run build
