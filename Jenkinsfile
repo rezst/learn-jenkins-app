@@ -47,6 +47,7 @@ pipeline {
               npm install serve
               node_modules/.bin/serve -s build &
               sleep 15
+              npx playwright install
               npx playwright test
             '''
             }
