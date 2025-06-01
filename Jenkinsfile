@@ -2,11 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Without docker') {
-            steps {
-               sh 'echo "No docker"'
-            }
-        }
         stage('with docker') {
             agent {
                 docker {
@@ -15,8 +10,14 @@ pipeline {
                 }
             }
             steps {
-               sh "echo 'docker'"
-               sh "npm --version"
+                sh'''
+                ls -la
+                echo 'docker
+                npm --version
+                npm ci
+                npm run build
+                ls -la
+                '''
             }
         }        
     }
