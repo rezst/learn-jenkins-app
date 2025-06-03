@@ -1,6 +1,28 @@
 pipeline {
     agent any
-    stages{
+
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                ls -la
+                echo docker
+                npm --version
+                npm ci
+                npm run build
+                ls -la
+                '''
+            }
+        }
+    }
+
+    stage('Run tests'){
         parallel{
             stage('Test'){
             agent {
@@ -34,7 +56,7 @@ pipeline {
               npx playwright test --reporter=html
             '''
             }
-        }       
+        }    
         }
     }
     post {
