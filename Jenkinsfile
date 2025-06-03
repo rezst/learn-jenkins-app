@@ -20,7 +20,6 @@ pipeline {
                 '''
             }
         }
-    }
 
     stage('Run tests'){
         parallel{
@@ -59,6 +58,8 @@ pipeline {
         }    
         }
     }
+    }
+
     post {
         always {
             junit 'jest-results/junit.xml'
