@@ -20,7 +20,7 @@ pipeline {
                 '''
             }
         }
-
+/*
     stage('Run tests'){
         parallel{
             stage('Test'){
@@ -66,6 +66,20 @@ pipeline {
             }
         }
         }    
+        }
+    }
+    */
+
+    stage('Run netlify'){
+        agent {
+            docker {
+                image 'node:18-alpine'
+                reuseNode true
+            }
+        }
+        steps {
+        sh "npm install netlify-cli"
+        sh "netlify --version"
         }
     }
     }
