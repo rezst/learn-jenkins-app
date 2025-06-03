@@ -1,7 +1,6 @@
 pipeline {
     agent any
-
-    stages {
+    stages{
         stage('Build') {
             agent {
                 docker {
@@ -20,9 +19,6 @@ pipeline {
                 '''
             }
         }
-    }
-
-    stages{
         parallel{
             stage('Test'){
             agent {
