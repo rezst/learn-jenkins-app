@@ -21,7 +21,7 @@ pipeline {
             }
         }
         stage('Test'){
-                        agent {
+            agent {
                 docker {
                     image 'node:18-alpine'
                     reuseNode true
@@ -36,7 +36,7 @@ pipeline {
             }
         }    
          stage('E2E'){
-                        agent {
+            agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.52.0-noble'
                     reuseNode true
@@ -57,6 +57,7 @@ pipeline {
     post {
         always {
             junit 'jest-results/junit.xml'
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report playwright', reportTitles: '', useWrapperFileDirectly: true])
         }
     }
 }
