@@ -90,7 +90,11 @@ environment
     '''
     }
     }  
-
+    stage('Approval'){
+        steps{
+            input message:"Ready to deploy", ok:"Yes, I'm ready to deploy!"
+        }
+    }
 
     stage('Deploy Prod'){
         agent {
