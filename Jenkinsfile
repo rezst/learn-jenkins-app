@@ -74,9 +74,25 @@ environment
         }    
        }
     }
-    
+    stage('Deploy Staging'){
+    agent {
+        docker {
+            image 'node:18-alpine'
+            reuseNode true
+        }
+    }
+    steps {
+    sh '''
+    echo "THIS IS SITE ID: $NETLIFY_SITE_ID"
+    node_modules/.bin/netlify status
+    node_modules/.bin/netlify deploy --dir=build
+    echo 'Change'
+    '''
+    }
+    }  
 
-    stage('Run netlify'){
+
+    stage('Deploy Prod'){
         agent {
             docker {
                 image 'node:18-alpine'
@@ -90,7 +106,7 @@ environment
         node_modules/.bin/netlify status
         node_modules/.bin/netlify deploy --dir=build --prod
         echo 'Change'
-'''
+        '''
         }
     }  
     stage('Prod E2E'){
