@@ -26,7 +26,7 @@ environment
                 '''
             }
         }
-/*
+
     stage('Run tests'){
         parallel{
             stage('Test'){
@@ -68,13 +68,13 @@ environment
             }
         post {
             always {
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report playwright', reportTitles: '', useWrapperFileDirectly: true])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report playwright local', reportTitles: '', useWrapperFileDirectly: true])
             }
         }
         }    
-        }
+       }
     }
-    */
+    
 
     stage('Run netlify'){
         agent {
@@ -92,6 +92,32 @@ environment
         echo 'Change'
 '''
         }
+    }  
+    stage('Prod E2E'){
+    agent {
+        docker {
+            image 'mcr.microsoft.com/playwright:v1.52.0-noble'
+            reuseNode true
+        }
     }
+
+    environment{
+        CI_ENVIRONMENT_URL = 'https://elaborate-centaur-88757f.netlify.app'
     }
+
+    steps{
+    sh'''
+        npx playwright install
+        npx playwright test
+        npx playwright test --reporter=html
+    '''
+    }
+    post {
+        always {
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report playwright E2E', reportTitles: '', useWrapperFileDirectly: true])
+        }
+    }
+    }    
 }
+}
+
