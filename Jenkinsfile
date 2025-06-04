@@ -107,8 +107,6 @@ environment
 
     steps{
     sh'''
-        npx playwright install
-        npx playwright test
         npx playwright test --reporter=html
     '''
     }
