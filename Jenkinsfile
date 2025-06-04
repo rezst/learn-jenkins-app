@@ -78,9 +78,10 @@ pipeline {
             }
         }
         steps {
+        sh "npx npm-check-updates -u"
         sh "npm install netlify-cli@20.1.1"
-        sh "netlify --version"
         sh "npm audit fix --force"
+        sh "netlify --version"
         }
     }
     }
