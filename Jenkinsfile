@@ -86,7 +86,7 @@ environment
         steps {
         sh '''npx npm-check-updates -u
         npm install netlify-cli@20.1.1
-        echo 'THIS IS SITE ID: $NETLIFY_SITE_ID
+        echo "THIS IS SITE ID: $NETLIFY_SITE_ID"
         node_modules/.bin/netlify status
 '''
         }
