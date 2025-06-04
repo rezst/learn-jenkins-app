@@ -93,7 +93,7 @@ environment
     stage('Approval'){
         steps{
             timeout(time:1,units:"MINUTES"){
-                input message:"Ready to deploy", ok:"Yes, I'm ready to deploy!"
+                input message:"Ready to deploy?", ok:"Yes, I'm ready to deploy!"
             }
         }
     }
