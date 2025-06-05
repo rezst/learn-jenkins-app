@@ -7,7 +7,7 @@ environment
     NETLIFY_AUTH_TOKEN = credentials('netlify-token')
 }
 
-    stages {
+stages {
         stage('Build') {
             agent {
                 docker {
@@ -75,21 +75,51 @@ environment
        }
     }
     stage('Deploy Staging'){
-    agent {
-        docker {
-            image 'node:18-alpine'
-            reuseNode true
+        agent {
+            docker {
+                image 'node:18-alpine'
+                reuseNode true
+            }
         }
-    }
-    steps {
-    sh '''
-    echo "THIS IS SITE ID: $NETLIFY_SITE_ID"
-    node_modules/.bin/netlify status
-    node_modules/.bin/netlify deploy --dir=build
-    echo 'Change'
-    '''
-    }
+        steps {
+            sh '''
+            echo "THIS IS SITE ID: $NETLIFY_SITE_ID"
+            npm install netlify-cli@20.1.1 node-jq
+            node_modules/.bin/netlify status
+            node_modules/.bin/netlify deploy --dir=build --json > deploy_staging.json
+            echo 'Change'
+            '''
+
+        }
+        scripts{
+            env.STAGING_URL=sh(script:"node_modules/.bin/node-jq -r '.deploy_url' deploy_staging.json",returnStdout:true)
+        }    
+    } 
+
+        stage('Staging E2E'){
+        agent {
+            docker {
+                image 'mcr.microsoft.com/playwright:v1.52.0-noble'
+                reuseNode true
+            }
+        }
+
+        environment{
+            CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+        }
+
+        steps{
+        sh'''
+            npx playwright test --reporter=html
+        '''
+        }
+        post {
+            always {
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report Staging E2E', reportTitles: '', useWrapperFileDirectly: true])
+            }
+        }
     }  
+
     stage('Approval'){
         steps{
             timeout(time:15,unit:'MINUTES') {
@@ -116,27 +146,27 @@ environment
         }
     }  
     stage('Prod E2E'){
-    agent {
-        docker {
-            image 'mcr.microsoft.com/playwright:v1.52.0-noble'
-            reuseNode true
+        agent {
+            docker {
+                image 'mcr.microsoft.com/playwright:v1.52.0-noble'
+                reuseNode true
+            }
         }
-    }
 
-    environment{
-        CI_ENVIRONMENT_URL = 'https://elaborate-centaur-88757f.netlify.app'
-    }
-
-    steps{
-    sh'''
-        npx playwright test --reporter=html
-    '''
-    }
-    post {
-        always {
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report playwright E2E', reportTitles: '', useWrapperFileDirectly: true])
+        environment{
+            CI_ENVIRONMENT_URL = 'https://elaborate-centaur-88757f.netlify.app'
         }
-    }
+
+        steps{
+        sh'''
+            npx playwright test --reporter=html
+        '''
+        }
+        post {
+            always {
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'HTML Report playwright E2E', reportTitles: '', useWrapperFileDirectly: true])
+            }
+        }
     }    
 }
 }
