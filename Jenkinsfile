@@ -89,11 +89,10 @@ stages {
             node_modules/.bin/netlify deploy --dir=build --json > deploy_staging.json
             echo 'Change'
             '''
-
-        }
-        script{
-            env.STAGING_URL=sh(script:"node_modules/.bin/node-jq -r '.deploy_url' deploy_staging.json",returnStdout:true)
-        }    
+            script{
+                env.STAGING_URL=sh(script:"node_modules/.bin/node-jq -r '.deploy_url' deploy_staging.json",returnStdout:true)
+            }   
+        } 
     } 
 
     stage('Staging E2E'){
