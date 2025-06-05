@@ -8,7 +8,7 @@ environment
 }
 
 stages {
-        stage('Build') {
+    stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -91,12 +91,12 @@ stages {
             '''
 
         }
-        scripts{
+        script{
             env.STAGING_URL=sh(script:"node_modules/.bin/node-jq -r '.deploy_url' deploy_staging.json",returnStdout:true)
         }    
     } 
 
-        stage('Staging E2E'){
+    stage('Staging E2E'){
         agent {
             docker {
                 image 'mcr.microsoft.com/playwright:v1.52.0-noble'
