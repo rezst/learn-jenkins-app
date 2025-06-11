@@ -91,7 +91,7 @@ pipeline {
             }
 
             environment {
-                CI_ENVIRONMENT_URL = 'https://elaborate-centaur-88757f.netlify.app'
+                CI_ENVIRONMENT_URL = 'TO_BE_SET'
             }
 
             steps {
