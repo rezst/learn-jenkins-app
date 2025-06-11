@@ -101,6 +101,7 @@ pipeline {
                     netlify status
                     netlify deploy --dir=build --json > deploy-output.json
                     CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-output.json)
+                    echo 
                     npx playwright test  --reporter=html
                 '''
             }
@@ -121,7 +122,7 @@ pipeline {
             }
 
             environment {
-                CI_ENVIRONMENT_URL = 'YOUR NETLIFY SITE URL'
+                CI_ENVIRONMENT_URL = 'https://elaborate-centaur-88757f.netlify.app/'
             }
 
             steps {
