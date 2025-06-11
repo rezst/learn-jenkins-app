@@ -9,6 +9,14 @@ environment
 }
 
 stages {
+
+    stage ('Docker')
+    {
+        steps{
+            sh 'docker build my-playwright .'
+        }
+    }
+
     stage('Build') {
             agent {
                 docker {
