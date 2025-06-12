@@ -9,28 +9,6 @@ pipeline {
 
     stages {
 
-        stage('AWS')
-        {
-            agent {
-                docker {
-                    image 'amazon/aws-cli:latest'
-                    args "--entrypoint=''"
-                    reuseNode true
-                }
-            }
-            environment{
-                AWS_S3_BUCKET = "learn-jenkins-06122025"
-            }
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'aws-secret', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                    echo "Hello S3! Biatchhh" > Hilou.html
-                    aws s3 cp Hilou.html s3://$AWS_S3_BUCKET/Hilou.html
-                    '''
-                }
-            }
-        }
-
         stage('Build') {
             agent {
                 docker {
@@ -47,6 +25,27 @@ pipeline {
                     npm run build
                     ls -la
                 '''
+            }
+        }
+
+        stage('AWS')
+        {
+            agent {
+                docker {
+                    image 'amazon/aws-cli:latest'
+                    args "--entrypoint=''"
+                    reuseNode true
+                }
+            }
+            environment{
+                AWS_S3_BUCKET = "learn-jenkins-06122025"
+            }
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'aws-secret', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                    aws s3 sync build s3://$AWS_S3_BUCKET
+                    '''
+                }
             }
         }
 
