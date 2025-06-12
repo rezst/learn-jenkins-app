@@ -18,11 +18,14 @@ pipeline {
                     reuseNode true
                 }
             }
+            environment{
+                AWS_S3_BUCKET = "learn-jenkins-06122025"
+            }
             steps{
                 withCredentials([usernamePassword(credentialsId: 'aws-secret', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                     echo "Hello S3! Biatchhh" > Hilou.txt
-                    aws s3 cp Hilou.txt s3://learn-jenkins-06122025/Hilou.txt
+                    aws s3 cp Hilou.html s3://$AWS_S3_BUCKET/Hilou.html
                     '''
                 }
             }
