@@ -25,7 +25,7 @@ pipeline {
             steps{
                 withCredentials([usernamePassword(credentialsId: 'aws-secret', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
-                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
+                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --region "eu-west-1"
                     '''
                 }
             }
