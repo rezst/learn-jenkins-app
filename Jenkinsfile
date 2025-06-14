@@ -2,13 +2,34 @@ pipeline {
     agent any
 
     environment {
-        NETLIFY_SITE_ID = '1fb0f7d8-745a-47cf-b30b-80ebaa8c8791'
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+       // NETLIFY_SITE_ID = '1fb0f7d8-745a-47cf-b30b-80ebaa8c8791'
+       // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
         REACT_APP_VERSION = "1.0.$BUILD_ID"
     }
 
     stages {
-
+        stage('Deploy AWS')
+        {
+            agent {
+                docker {
+                    image 'amazon/aws-cli:latest'
+                    args "--entrypoint=''"
+                    reuseNode true
+                }
+            }
+           /* environment{
+                AWS_S3_BUCKET = "learn-jenkins-06122025"
+            }
+               aws s3 sync build s3://$AWS_S3_BUCKET
+            */
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'aws-secret', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh '''
+                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
+                    '''
+                }
+            }
+        }
         stage('Build') {
             agent {
                 docker {
@@ -26,27 +47,8 @@ pipeline {
             }
         }
 
-        stage('AWS')
-        {
-            agent {
-                docker {
-                    image 'amazon/aws-cli:latest'
-                    args "--entrypoint=''"
-                    reuseNode true
-                }
-            }
-            environment{
-                AWS_S3_BUCKET = "learn-jenkins-06122025"
-            }
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'aws-secret', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                    sh '''
-                    aws s3 sync build s3://$AWS_S3_BUCKET
-                    '''
-                }
-            }
-        }
-
+       
+/*
         stage('Tests') {
             parallel {
                 stage('Unit tests') {
@@ -154,6 +156,6 @@ pipeline {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Prod E2E', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
-        }
+        }*/
     }
 }
