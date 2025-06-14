@@ -9,7 +9,7 @@ pipeline {
         AWS_DEFAULT_REGION = "eu-west-1"
         AWS_ECS_CLUSTER = "LearnJenkinsApp"
         AWS_DOCKER_REGISTRY = "434904678699.dkr.ecr.eu-west-1.amazonaws.com"
-        AWS_ECS_SERVICE_PROD = "LearnJenkinsApp"
+        AWS_ECS_SERVICE_PROD = "LearnJenkinsApp-Prod"
         AWS_ECS_TD = "LearnJenkinsApp-Prod"
     }
 
