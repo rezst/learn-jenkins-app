@@ -5,6 +5,7 @@ pipeline {
        // NETLIFY_SITE_ID = '1fb0f7d8-745a-47cf-b30b-80ebaa8c8791'
        // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
         REACT_APP_VERSION = "1.0.$BUILD_ID"
+        AWS_DEFAULT_REGION = "eu-west-1"
     }
 
     stages {
@@ -25,7 +26,7 @@ pipeline {
             steps{
                 withCredentials([usernamePassword(credentialsId: 'aws-secret', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
-                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --region "eu-west-1"
+                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
                     '''
                 }
             }
