@@ -5,7 +5,7 @@ pipeline {
        // NETLIFY_SITE_ID = '1fb0f7d8-745a-47cf-b30b-80ebaa8c8791'
        // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
         REACT_APP_VERSION = "1.0.$BUILD_ID"
-        APP_NAME = "LearnJenkinsAPP"
+        APP_NAME = "learnjenkinsapp"
         AWS_DEFAULT_REGION = "eu-west-1"
         AWS_ECS_CLUSTER = "LearnJenkinsApp"
         AWS_DOCKER_REGISTRY = "434904678699.dkr.ecr.eu-west-1.amazonaws.com"
